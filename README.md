@@ -11,7 +11,7 @@
 
 ## 🛠️ Tech Stack
 
-* **Frontend:** HTML5, CSS3, Vanilla JavaScript
+* **Web-Technologies:** HTML5, CSS3, Vanilla JavaScript, Node.js
 * **Real-Time Media:** Agora RTC SDK (v4.18.2)
 * **Icons:** FontAwesome
 * **Fonts:** Quicksand & Pacifico (Google Fonts)
