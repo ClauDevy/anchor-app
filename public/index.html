@@ -1,0 +1,208 @@
+<!-- prompts: fix all of these
+    remove the mute button ui and functionality for video and voice call
+    center the div that wraps "anchor is ready" for all screen sizes
+  -->
+
+  <!-- INDEX.JS -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Anchor | Your AI Companion</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.18.2.js"></script>
+    
+    <link rel="icon" type="image/png" href="img/anchor.png">
+</head>
+<body>
+
+    <div id="landing-container" class="landing-container">
+        
+        <div id="screen-loading" class="landing-slide fade-in">
+            <div class="landing-logo-wrapper">
+                <img src="img/anchor.png" alt="Anchor Logo" class="logo-img large pulse-anim">
+            </div>
+            <div class="loading-area">
+                <p class="loading-text">Finding a safe space...</p>
+                <div class="loading-bar-container">
+                    <div class="loading-bar"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="screen-welcome" class="landing-slide d-none">
+            <div class="landing-logo-wrapper small mb-4">
+                <img src="img/anchor.png" alt="Anchor Logo" class="logo-img medium">
+            </div>
+            
+            <h1 class="landing-heading">Hey there. <br>I'm here to listen.</h1>
+            <p class="landing-subtext">How can I support you today?</p>
+            
+            <button class="primary-action-btn pulse-hover" onclick="showSelectionScreen()">
+                <i class="fas fa-heart"></i> Start New Session
+            </button>
+        </div>
+
+        <div id="screen-selection" class="landing-slide d-none">
+            <div class="landing-logo-wrapper small mb-4">
+                <img src="img/anchor.png" alt="Anchor Logo" class="logo-img medium">
+            </div>
+
+            <h2 class="landing-subheading">Choose how you'd like to connect</h2>
+
+            <div class="selection-grid">
+                <button class="selection-card" onclick="enterApp('chat')">
+                    <div class="icon-circle"><i class="fas fa-comment-dots"></i></div>
+                    <span>Text Chat</span>
+                </button>
+                
+                <button class="selection-card" onclick="enterApp('voice')">
+                    <div class="icon-circle"><i class="fas fa-microphone-alt"></i></div>
+                    <span>Voice Chat</span>
+                </button>
+                
+                <button class="selection-card" onclick="enterApp('video')">
+                    <div class="icon-circle"><i class="fas fa-video"></i></div>
+                    <span>Video Call</span>
+                </button>
+            </div>
+
+            <p class="privacy-disclaimer">
+                <i class="fas fa-shield-alt"></i> Your privacy is our priority. This space is safe, anonymous, and protected.
+            </p>
+        </div>
+
+    </div>
+
+    <div id="app-container" class="app-layout d-none">
+        
+        <aside class="sidebar">
+            <div class="brand">
+                <img src="img/anchor.png" alt="Anchor" class="logo-img sidebar-logo">
+            </div>
+            
+            <nav class="nav-menu">
+                <button onclick="setMode('video')" class="nav-item active" id="btn-video" title="Video Call">
+                    <i class="fas fa-video"></i> <span>Video</span>
+                </button>
+                <button onclick="setMode('voice')" class="nav-item" id="btn-voice" title="Voice Call">
+                    <i class="fas fa-phone-alt"></i> <span>Voice</span>
+                </button>
+                <button onclick="setMode('chat')" class="nav-item" id="btn-chat" title="Text Chat">
+                    <i class="fas fa-comment-dots"></i> <span>Chat</span>
+                </button>
+            </nav>
+
+            <div class="status-indicator">
+                <div class="status-dot" id="connection-dot"></div>
+                <span id="connection-status">Ready</span>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            
+            <div id="video-interface" class="interface-panel">
+                
+                <div class="stage-container" id="stage-container">
+                    
+                    <div id="remote-player-wrapper" class="video-wrapper">
+                        
+                        <div id="ai-placeholder" class="placeholder-screen">
+                            <div class="placeholder-content">
+                                <div class="soft-icon"><i class="fas fa-anchor"></i></div>
+                                <h2 class="placeholder-title">Anchor is Ready</h2>
+                                <p class="placeholder-desc" id="placeholder-msg">Take a deep breath. We'll connect when you're ready.</p>
+                                <div class="spinner-border text-light mt-3" role="status" style="display:none;" id="loading-spinner"></div>
+                                <p id="error-msg" class="text-white small mt-2"></p>
+                            </div>
+                        </div>
+
+                        <div id="ai-video-player"></div>
+
+                        <div id="phone-ui" class="phone-ui d-none">
+                            <div class="avatar-circle">
+                                <i class="fas fa-smile"></i>
+                                <div class="pulse-ring"></div>
+                            </div>
+                            <h3 class="mt-4 text-white">Connected</h3>
+                            <p class="text-white-50">Listening...</p>
+                        </div>
+
+                        <div id="overlay-chat" class="overlay-chat d-none">
+                            <div id="overlay-chat-history"></div>
+                        </div>
+                    </div>
+
+                    <div id="local-player" class="local-pip d-none"></div>
+
+                    <div class="control-bar-wrapper">
+                        <div class="control-bar">
+                            <button id="toggle-chat-btn" class="ctrl-btn icon-btn d-none" title="Toggle Chat Overlay">
+                                <i class="fas fa-eye"></i>
+                            </button>
+
+                            <button id="toggle-mic-btn" class="ctrl-btn icon-btn" title="Mute Microphone">
+                                <i class="fas fa-microphone"></i>
+                            </button>
+
+                            <button id="toggle-cam-btn" class="ctrl-btn icon-btn d-none" title="Camera">
+                                <i class="fas fa-video"></i>
+                            </button>
+                            
+                            <button id="call-btn" class="ctrl-btn call-btn">
+                                Begin Session
+                            </button>
+                            
+                            <button id="hangup-btn" class="ctrl-btn hangup-btn d-none" title="End Session">
+                                <i class="fas fa-phone-slash"></i>
+                            </button>
+
+                            <button id="fullscreen-btn" class="ctrl-btn icon-btn d-none" title="Fullscreen" onclick="toggleFullscreen()">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="transcript-panel" id="call-container">
+                    <div class="panel-header">
+                        <span>Conversation</span>
+                        <small class="text-success fw-bold"><i class="fas fa-circle me-1" style="font-size: 8px;"></i>Live</small>
+                    </div>
+                    <div id="call-history" class="log-container">
+                        <div class="sys-msg">Welcome to your safe space.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="chat-interface" class="interface-panel d-none">
+                <div class="chat-card">
+                    <div class="panel-header">
+                        <span>Text Session</span>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="audio-response-toggle">
+                            <label class="form-check-label" style="font-size: 0.9rem;" for="audio-response-toggle">Voice Response</label>
+                        </div>
+                    </div>
+                    
+                    <div id="text-history" class="log-container chat-bg">
+                        <div class="sys-msg">You are connected with Anchor.</div>
+                    </div>
+
+                    <div class="chat-input-area">
+                        <input type="text" id="chat-input" placeholder="Type what's on your mind..." autocomplete="off">
+                        <button id="send-chat-btn"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
