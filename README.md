@@ -26,7 +26,7 @@ Before you begin, ensure you have the following installed:
 
 1.  **Clone the repository**
     ```bash
-    git clone [https://github.com/yourusername/anchor-app.git](https://github.com/yourusername/anchor-app.git)
+    git clone https://github.com/ClauDevy/anchor-app.git
     cd anchor-app
     ```
 
