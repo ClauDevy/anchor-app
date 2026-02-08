@@ -1,5 +1,5 @@
 # ⚓ Anchor | Your AI Companion
-z
+
 **Anchor** is a privacy-focused mental health companion application designed to provide a safe space for users to connect via Text, Voice, or Video. Built with a soothing "Mint & Deep Ocean" aesthetic, it prioritizes user comfort and anonymity.
 
 ## ⚠️ A Note on Functionality ⚠️
@@ -10,7 +10,7 @@ Some of the cool features you see may currently be taking a well-deserved nap!
 >
 > **The Truth:** Your developer (that's me!) is temporarily **prioritizing new feature development** and hasn't yet gone through the bureaucracy of key renewal. Please understand this is a focus issue, not a bug issue! 😅 
 >
-> **⚡ Hackathon Context:** This is a **Hackathon Project developed in just 1 day!** Most features are **"Vibe Coded"** (built on pure momentum), so expect a few bugs to be part of the experience! 🐛
+> **Hackathon Context:** This is a **Hackathon Project developed in just 1 day!** Most features are **"Vibe Coded"** (built on pure momentum), so expect a few bugs to be part of the experience! 🐛
 > 
 > **Workaround:** If you are keen to test full functionality, please clone the repository and insert your own valid API key.
 
